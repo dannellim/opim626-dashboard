@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Layout with 6 Containers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html,
+        body {
+            height: 100%;
+            /* Make html and body take up the full viewport height */
+            margin: 0;
+            /* Remove default body margin */
+            overflow: hidden;
+            /* Prevent scrollbars if content exceeds screen */
+        }
+
+        .full-height {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            /* Make the container-fluid take full height */
+        }
+
+        .row {
+            flex: 1 0 auto;
+            /* Distribute remaining vertical space equally */
+            display: flex;
+            /* Enable flexbox for rows to control column height */
+            flex-wrap: wrap;
+            /* Allow columns to wrap if needed */
+            margin-left: 0 !important;
+            /* Remove default row margins */
+            margin-right: 0 !important;
+            /* Remove default row margins */
+        }
+
+        .col {
+            display: flex;
+            /* Enable flexbox for columns to control content centering */
+            align-items: center;
+            /* Vertically center content */
+            justify-content: center;
+            /* Horizontally center content */
+            border: 1px solid #dee2e6;
+            /* Light border to separate containers */
+            background-color: #f8f9fa;
+            /* Light gray background for visibility */
+        }
+    </style>
+</head>
+
+<body>
+    <header></header>
+
+    <div class="container-fluid full-height">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-0">
+            <div class="col">Container 1</div>
+            <div class="col">Container 2</div>
+            <div class="col">Container 3</div>
+            <div class="col">Container 4</div>
+            <div class="col">Container 5</div>
+            <div class="col">Container 6</div>
+        </div>
+    </div>
+    <footer class="text-center mt-4">
+        <p>&copy; 2025 Dannel Lim Khye Hsen</p>
+
+    <script src="scripts/header.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

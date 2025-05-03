@@ -4,21 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cybersecurity Dashboard</title>
+    <title>Identity & Privilege</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         html,
         body {
             height: auto;
-            /* Allow height to adjust based on content */
             margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e; /* Dark background */
+            color: #d4d4d4; /* Light text */
         }
 
         .full-height {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            /* Ensure it's at least the viewport height */
         }
 
         .row {
@@ -27,21 +28,116 @@
             flex-wrap: wrap;
             margin-left: 0 !important;
             margin-right: 0 !important;
+            gap: 20px; /* Space between dashboard items */
+            padding: 20px; /* Padding around the dashboard items */
         }
 
         .col {
             display: flex;
+            flex: 1 0 calc(33.33% - 20px); /* Adjust width for 3 columns with gap */
+            max-width: calc(33.33% - 20px);
+            background-color: #2c2c2c; /* Darker panel background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Deeper shadow */
+            border-left: 5px solid #666; /* Subtle border */
             align-items: center;
             justify-content: center;
-            border: 1px solid #dee2e6;
-            background-color: #f8f9fa;
-            min-height: 200px;
-            /* Example: Ensure each container has some minimum height */
+            min-height: 150px; /* Adjust as needed */
+            flex-direction: column; /* Stack content within the column */
+            text-align: center;
+            transition: background-color 0.3s ease; /* Hover effect */
+            margin: 0;
+        }
+
+        .col:hover {
+            background-color: #333;
+        }
+
+        /* Adjust for smaller screens (2 columns) */
+        @media (max-width: 768px) {
+            .col {
+                flex: 1 0 calc(50% - 20px);
+                max-width: calc(50% - 20px);
+            }
+        }
+
+        /* Adjust for even smaller screens (1 column) */
+        @media (max-width: 576px) {
+            .col {
+                flex: 1 0 calc(100% - 20px);
+                max-width: calc(100% - 20px);
+            }
+        }
+
+        .col h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #eee; /* Lighter heading text */
+            font-size: 1.2em;
+        }
+
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff; /* White metric value */
+        }
+
+        .metric-description {
+            color: #aaa; /* Slightly lighter description text */
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .alert {
+            border-left-color: #dc3545; /* Red alert */
+            background-color: rgba(220, 53, 69, 0.1); /* Subtle red background */
+        }
+
+        .warning {
+            border-left-color: #ffc107; /* Yellow warning */
+            background-color: rgba(255, 193, 7, 0.1); /* Subtle yellow background */
+        }
+
+        .good {
+            border-left-color: #28a745; /* Green good */
+            background-color: rgba(40, 167, 69, 0.1); /* Subtle green background */
+        }
+
+        .progress-bar-container {
+            background-color: #333; /* Dark progress bar background */
+            border-radius: 5px;
+            height: 20px;
+            overflow: hidden;
+            margin-top: 10px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .progress-bar {
+            background-color: #28a745; /* Green progress bar fill */
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 20px;
+            color: #fff; /* White progress text */
+            font-size: 0.9em;
+        }
+
+        .highlight {
+            background-color: #555; /* Darker highlight */
+            color: #ffeb3b; /* Yellow highlight text */
+            padding: 2px 5px;
+            border-radius: 3px;
         }
 
         footer {
             flex-shrink: 0;
-            /* Prevent the footer from shrinking */
+            color: #777;
+            text-align: center;
+            padding: 10px 0;
         }
     </style>
 </head>
@@ -51,12 +147,42 @@
 
     <div class="container-fluid full-height">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-0">
-            <div class="col">Container 1</div>
-            <div class="col">Container 2</div>
-            <div class="col">Container 3</div>
-            <div class="col">Container 4</div>
-            <div class="col">Container 5</div>
-            <div class="col">Container 6</div>
+            <div class="col alert">
+                <h3>Alert Criteria</h3>
+                <p class="metric-description">Overall status of active alerts</p>
+                <p class="metric-value">3 Active Alerts</p>
+            </div>
+            <div class="col alert">
+                <h3>Accounts with Elevated Privileges</h3>
+                <p class="metric-description">Without documented business need</p>
+                <p class="metric-value">1 Account</p>
+            </div>
+            <div class="col warning">
+                <h3>Temporary Privilege Usage</h3>
+                <p class="metric-description">Track auto-expiry of temp accounts</p>
+                <p class="metric-value">2 Missing Expiries</p>
+            </div>
+            <div class="col warning">
+                <h3>Dormant AD Accounts</h3>
+                <p class="metric-description">Accounts inactive >30 days</p>
+                <p class="metric-value">12 Accounts</p>
+            </div>
+            <div class="col good">
+                <h3>MFA Coverage Rate</h3>
+                <p class="metric-description">% of accounts with MFA enforced</p>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 92%;">92%</div>
+                </div>
+            </div>
+            <div class="col">
+                <h3>Last Password Change</h3>
+                <p class="metric-description">Accounts not rotated in 90 days</p>
+                <p class="metric-value">
+                    User X: <span class="highlight">101 days</span><br>
+                    User Y: 75 days<br>
+                    User Z: <span class="highlight">115 days</span>
+                </p>
+            </div>
         </div>
     </div>
     <div id="footer-placeholder"></div>

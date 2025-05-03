@@ -67,114 +67,152 @@
 <body>
     <header></header>
     <div class="dashboard-container">
-
-        <!-- Supplier Risk Scorecard -->
-        <div class="dashboard-item"
-            style="padding: 15px; border-radius: 5px; display: flex; flex-direction: column; align-items: center;">
+        <div class="dashboard-item">
             <h5>Supplier Risk Scorecard</h5>
-            <div class="kpi"
-                style="font-size: 1.2em; font-weight: bold; margin-bottom: 5px; color: #fff; background-color: #28a745; padding: 5px 10px; border-radius: 3px; display: inline-block;">
-                Score: 77</div>
-            <div class="label" style="font-size: 0.9em; color: #777;">
-                Benchmark: <span style="color: #00a86b; font-weight: bold;">78</span> |
-                Breaches: <span style="color: #e40046; font-weight: bold;">2</span>
+            <div id="scoreCard" class="kpi"></div>
+            <div class="label">
+                Benchmark: <span id="benchmark"></span> |
+                Breaches: <span id="breaches"></span>
             </div>
             <canvas id="scoreTrend"></canvas>
         </div>
-
-        <!-- Incident Tracker -->
-        <div class="dashboard-item"
-            style="padding: 15px; border: 1px solid ddd; border-radius: 5px; display: flex; flex-direction: column; align-items: center;">
+        <div class="dashboard-item">
             <h5>Incident Tracker</h5>
-            <div class="kpi"
-                style="font-size: 1.2em; font-weight: bold; margin-bottom: 5px; color: #fff; background-color: #ff9800; padding: 5px 10px; border-radius: 3px; display: inline-block;">
-                2 Incidents</div>
-            <div class="label" style="font-size: 0.9em; color: #777;">
-                <span style="color: #e40046; font-weight: bold;">1 Critical</span>
-                <br>
-                <span style="color: #ffc107; font-weight: bold;">1 Medium</span>
-                <br>
+            <div id="incidents" class="kpi"></div>
+            <div class="label">
+                <span id="critical"></span><br>
+                <span id="medium"></span><br>
                 Root: Software Vulnerability
             </div>
         </div>
-
-        <!-- Vulnerability & Patch Status -->
-        <div class="dashboard-item" style="padding: 15px; border-radius: 5px;">
-            <h5 style="margin-bottom: 10px; text-align: center;">Vulnerability & Patch Status</h5>
-            <div class="kpi" style="font-size: 1.4em; font-weight: bold; color: #d9534f; margin-bottom: 8px;">
-                <span style="font-size: 1em;"></span>32% <span style="color: #d9534f;">Overdue</span>
+        <div class="dashboard-item">
+            <h5>Vulnerability & Patch Status</h5>
+            <div id="overdue" class="kpi"></div>
+            <div class="label" style="margin-bottom: 10px;">
+                Patch Avg: <span id="patchAvg"></span> |
+                Zero-Day: <span id="zeroDay"></span>
             </div>
-            <div class="label" style="font-size: 0.95em; color: #555; margin-bottom: 10px;">
-                Patch Avg: <span style="font-weight: bold;">25 Days</span> |
-                Zero-Day: <span style="color: #5cb85c; font-weight: bold;">Yes</span>
-            </div>
-            <div class="bar"
-                style="background-color: #f0ad4e; color: white; padding: 8px; margin-bottom: 10px; border-radius: 3px; font-size: 0.9em;">
-                System 1: <span style="font-weight: bold;">8 patches</span>
-            </div>
-            <div class="bar"
-                style="background-color: #f0ad4e; color: white; padding: 8px; margin-bottom: 5px; border-radius: 3px; font-size: 0.9em;">
-                System 2: <span style="font-weight: bold;">3 patches</span>
+            <div class="bar" id="system1" style="margin-bottom: 10px;"></div>
+            <div class="bar" id="system2"></div>
+        </div>
+        <div class="dashboard-item">
+            <h5>Risk Alerts</h5>
+            <div id="alerts" class="kpi"></div>
+            <div class="label">
+                Last 30 Days | Level: <span id="threatLevel"></span>
             </div>
         </div>
-
-        <!-- Third-Party Risk Alerts -->
-        <div class="dashboard-item" style="padding: 15px; border-radius: 5px;">
-            <h5 style="margin-bottom: 10px; text-align: center;">Risk Alerts</h5>
-            <div class="kpi" style="font-size: 1.4em; font-weight: bold; color: #ffc107; margin-bottom: 8px;">
-                <span style="font-size: 1em;"></span>5 Alerts
-            </div>
-            <div class="label" style="font-size: 0.95em; color: #555;">
-                Last 30 Days | Level: <span style="color: #ffc107; font-weight: bold;">Medium</span>
+        <div class="dashboard-item">
+            <h5>Business Impact</h5>
+            <div id="riskValue" class="kpi"></div>
+            <div class="label">
+                Alt Supplier: <span id="altSupplier"></span>
             </div>
         </div>
-
-        <!-- Business Impact Mapping -->
-        <div class="dashboard-item" style="padding: 15px; border-radius: 5px;">
-            <h5 style="margin-bottom: 10px; text-align: center;">Business Impact</h5>
-            <div class="kpi" style="font-size: 1.4em; font-weight: bold; color: #d9534f; margin-bottom: 8px;">
-                <span style="font-size: 1em;"></span>$500,000 Risk
-            </div>
-            <div class="label" style="font-size: 0.95em; color: #555;">
-                Alt Supplier: <span style="color: #5cb85c; font-weight: bold;">Available</span>
+        <div class="dashboard-item">
+            <h5>Compliance Status</h5>
+            <div id="compliance" class="kpi"></div>
+            <div class="label">
+                <span id="certs"></span> Certifications Expiring<br>
+                ISO 27001: <span id="iso"></span><br>
+                NIST CSF: <span id="nist"></span> (Data Security)
             </div>
         </div>
-
-        <!-- Compliance Status -->
-        <div class="dashboard-item" style="padding: 15px; border-radius: 5px;">
-            <h5 style="margin-bottom: 10px; text-align: center;">Compliance Status</h5>
-            <div class="kpi" style="font-size: 1.4em; font-weight: bold; color: #f0ad4e; margin-bottom: 8px;">
-                <span style="font-size: 1em;"></span>70% Compliant
-            </div>
-            <div class="label" style="font-size: 0.95em; color: #d9534f; margin-bottom: 5px;">
-                <span style="font-weight: bold;">3</span> Certifications Expiring
-            </div>
-            <div class="label" style="font-size: 0.95em; color: #555; margin-bottom: 3px;">
-                ISO 27001: <span style="color: #5cb85c; font-weight: bold;">Compliant</span>
-            </div>
-            <div class="label" style="font-size: 0.95em; color: #555;">
-                NIST CSF: <span style="color: #f0ad4e; font-weight: bold;">Partial</span> (Data Security)
+        <div class="dashboard-item">
+            <h5>Response Readiness</h5>
+            <div id="plans" class="kpi"></div>
+            <div class="label">
+                SLA Compliance: <span id="sla"></span>
             </div>
         </div>
-
-        <!-- Response Readiness -->
-        <div class="dashboard-item" style="padding: 15px; border-radius: 5px;">
-            <h5 style="margin-bottom: 10px; text-align: center;">Response Readiness</h5>
-            <div class="kpi" style="font-size: 1.4em; font-weight: bold; color: #28a745; margin-bottom: 8px;">
-                <span style="font-size: 1em;"></span>12 Plans
-            </div>
-            <div class="label" style="font-size: 0.95em; color: #555;">
-                SLA Compliance: <span style="color: #28a745; font-weight: bold;">95%</span>
-            </div>
-        </div>
-
     </div>
-
     <div id="footer-placeholder"></div>
-
     <script src="scripts/header.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function randInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        function randFloat(min, max, decimals = 0) {
+            return parseFloat((Math.random() * (max - min) + min).toFixed(decimals));
+        }
+        function colorClass(value, green, yellow, red) {
+            if (value >= green) return '#28a745';
+            if (value >= yellow) return '#ffc107';
+            return '#d9534f';
+        }
+
+        const data = {
+            score: randInt(60, 95),
+            benchmark: randInt(70, 80),
+            breaches: randInt(0, 5),
+            critical: randInt(0, 2),
+            medium: randInt(0, 3),
+            incidents: 0,
+            critical: randInt(0, 2),
+            medium: randInt(0, 3),
+            overdue: randInt(10, 50),
+            patchAvg: randInt(10, 35),
+            system1: randInt(1, 10),
+            system2: randInt(1, 10),
+            alerts: randInt(1, 10),
+            threatLevel: ['Low', 'Medium', 'High'][randInt(0, 2)],
+            risk: randInt(100000, 1000000),
+            altSupplier: ['Available', 'Unavailable'][randInt(0, 1)],
+            compliance: randInt(50, 100),
+            certs: randInt(0, 5),
+            iso: 'Compliant',
+            nist: ['Compliant', 'Partial', 'Non-Compliant'][randInt(0, 2)],
+            plans: randInt(5, 20),
+            sla: randInt(80, 99)
+        };
+
+        document.getElementById('scoreCard').innerText = `Score: ${data.score}`;
+        document.getElementById('scoreCard').style.backgroundColor = colorClass(data.score, 80, 70, 0);
+        document.getElementById('benchmark').innerText = data.benchmark;
+        document.getElementById('breaches').innerText = data.breaches;
+
+        data.incidents = data.critical + data.medium;
+        document.getElementById('incidents').innerText = `${data.incidents} Incidents`;
+        document.getElementById('incidents').style.backgroundColor = data.incidents > 0 ? '#d9534f' : '#28a745';
+        document.getElementById('critical').innerText = `${data.critical} Critical`;
+        document.getElementById('medium').innerText = `${data.medium} Medium`;
+
+        document.getElementById('overdue').innerText = `${data.overdue}% Overdue`;
+        document.getElementById('overdue').style.color = colorClass(data.overdue, 20, 40, 60);
+        document.getElementById('patchAvg').innerText = `${data.patchAvg} Days`;
+        document.getElementById('zeroDay').innerText = data.system1 > 7 ? 'Yes' : 'No';
+        document.getElementById('system1').innerText = `System 1: ${data.system1} patches`;
+        document.getElementById('system2').innerText = `System 2: ${data.system2} patches`;
+
+        document.getElementById('alerts').innerText = `${data.alerts} Alerts`;
+        document.getElementById('alerts').style.backgroundColor = data.alerts > 0 ? '#d9534f' : '#28a745';
+        document.getElementById('threatLevel').innerText = data.threatLevel;
+        document.getElementById('threatLevel').style.color = {
+            Low: '#28a745', Medium: '#ffc107', High: '#d9534f'
+        }[data.threatLevel];
+        document.getElementById('threatLevel').style.color = {
+            Low: '#28a745', Medium: '#ffc107', High: '#d9534f'
+        }[data.threatLevel];
+
+        document.getElementById('riskValue').innerText = `$${data.risk.toLocaleString()} Risk`;
+        document.getElementById('riskValue').style.color = colorClass(1000000 - data.risk, 750000, 500000, 0);
+        document.getElementById('altSupplier').innerText = data.altSupplier;
+
+        document.getElementById('compliance').innerText = `${data.compliance}% Compliant`;
+        document.getElementById('compliance').style.color = colorClass(data.compliance, 80, 60, 0);
+        document.getElementById('certs').innerText = data.certs;
+        document.getElementById('iso').innerText = data.iso;
+        document.getElementById('nist').innerText = data.nist;
+        document.getElementById('nist').style.color = {
+            Compliant: '#28a745', Partial: '#ffc107', 'Non-Compliant': '#d9534f'
+        }[data.nist];
+
+        document.getElementById('plans').innerText = `${data.plans} Plans`;
+        document.getElementById('plans').style.color = colorClass(data.plans, 15, 10, 0);
+        document.getElementById('sla').innerText = `${data.sla}%`;
+        document.getElementById('sla').style.color = colorClass(data.sla, 90, 80, 0);
+
         const ctx = document.getElementById('scoreTrend').getContext('2d');
         new Chart(ctx, {
             type: 'line',
@@ -182,7 +220,7 @@
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
                 datasets: [{
                     label: 'Security Score',
-                    data: [72, 74, 70, 76, 85],
+                    data: [randInt(60, 80), randInt(60, 90), randInt(60, 90), data.benchmark, data.score],
                     borderColor: '#90caf9',
                     backgroundColor: 'rgba(144,202,249,0.2)',
                     fill: true,

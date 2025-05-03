@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybersecurity Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #181818;
+            /* Very dark background */
+            color: #eee;
+            /* Light text */
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            /* Overall padding for the body */
+        }
+
+        .full-height {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .row {
+            flex: 1 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            margin-left: -10px;
+            /* Adjust for gap */
+            margin-right: -10px;
+            /* Adjust for gap */
+            gap: 20px;
+            /* Space between dashboard items */
+            padding: 20px 0;
+            /* Vertical padding for the row */
+        }
+
+        .col {
+            display: flex;
+            flex: 1 0 calc(33.33% - 20px);
+            /* Default 3 columns */
+            max-width: calc(33.33% - 20px);
+            background-color: #2c2c2c;
+            /* Darker panel background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            /* Deeper shadow */
+            border-left: 5px solid #666;
+            /* Subtle border */
+            align-items: stretch;
+            /* Make columns the same height */
+            flex-direction: column;
+            /* Stack content within the column */
+            text-align: left;
+            /* Align text to the left within columns */
+            transition: background-color 0.3s ease;
+            /* Hover effect */
+            margin: 0;
+        }
+
+        .col:hover {
+            background-color: #333;
+        }
+
+        /* Adjust column width for the "Active Remote Access Sessions" */
+        .col-2 {
+            flex: 0 0 calc(66.66% - 20px);
+            /* Takes up two columns */
+            max-width: calc(66.66% - 20px);
+        }
+
+        /* Adjust for smaller screens (2 columns) */
+        @media (max-width: 768px) {
+
+            .col,
+            .col-2 {
+                flex: 1 0 calc(50% - 20px);
+                max-width: calc(50% - 20px);
+            }
+        }
+
+        /* Adjust for even smaller screens (1 column) */
+        @media (max-width: 576px) {
+
+            .col,
+            .col-2 {
+                flex: 1 0 calc(100% - 20px);
+                max-width: calc(100% - 20px);
+            }
+        }
+
+        .col h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #eee;
+            /* Lighter heading text */
+            font-size: 1.2em;
+            text-align: left;
+            /* Align heading to the left */
+        }
+
+        .metric-value {
+            font-size: 1.8em;
+            /* Slightly larger metric value */
+            font-weight: bold;
+            color: #fff;
+            /* White metric value */
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .metric-description {
+            color: #aaa;
+            /* Slightly lighter description text */
+            margin-bottom: 15px;
+            font-size: 0.95em;
+            text-align: left;
+        }
+
+        .alert {
+            border-left-color: #dc3545;
+            /* Red alert */
+            background-color: rgba(220, 53, 69, 0.1);
+            /* Subtle red background */
+        }
+
+        .warning {
+            border-left-color: #ffc107;
+            /* Yellow warning */
+            background-color: rgba(255, 193, 7, 0.1);
+            /* Subtle yellow background */
+        }
+
+        .good {
+            border-left-color: #28a745;
+            /* Green good */
+            background-color: rgba(40, 167, 69, 0.1);
+            /* Subtle green background */
+        }
+
+        .progress-bar-container {
+            background-color: #333;
+            /* Dark progress bar background */
+            border-radius: 5px;
+            height: 20px;
+            overflow: hidden;
+            margin-top: 10px;
+            width: 100%;
+            /* Full width within the column */
+        }
+
+        .progress-bar {
+            background-color: #28a745;
+            /* Green progress bar fill */
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 20px;
+            color: #fff;
+            /* White progress text */
+            font-size: 0.9em;
+        }
+
+        .highlight {
+            background-color: #555;
+            /* Darker highlight */
+            color: #ffeb3b;
+            /* Yellow highlight text */
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        footer {
+            flex-shrink: 0;
+            color: #777;
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid #333;
+            margin-top: 20px;
+        }
+
+        /* Specific styles for your dashboard content */
+        .map-placeholder {
+            width: 100%;
+            height: 150px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            border: 1px solid #444;
+        }
+
+        .featured-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(70%);
+            /* Even darker image */
+        }
+
+        .unknown-session-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #bbb;
+            text-align: left;
+        }
+
+        .unknown-session-list li {
+            margin-bottom: 5px;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            color: #ddd;
+        }
+
+        .details-table th,
+        .details-table td {
+            border: 1px solid #444;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .details-table th {
+            background-color: #333;
+            color: #eee;
+        }
+
+        .compliant {
+            color: #5cb85c;
+            /* Bootstrap success color */
+        }
+
+        .non-compliant {
+            color: #d9534f;
+            /* Bootstrap danger color */
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <header></header>
+    <div class="full-height">
+        <div class="row">
+            <div class="col">
+                <h3>Unauthorized Geo IP Logins</h3>
+                <div class="map-placeholder">
+                    <img src="https://www.redlegg.com/hubfs/Best-Threat-Maps.png" alt="featured image"
+                        class="featured-image">
+                </div>
+                <div class="metric-value" id="unauthorized-geo-count">5</div>
+                <div class="metric-description">Number of logins from unexpected locations.</div>
+            </div>
+
+            <div class="col">
+                <h3>Remote Access Sessions from Unknown IPs</h3>
+                <div class="metric-value" id="unknown-ip-sessions-count">2</div>
+                <div class="metric-description">Sessions originating from IPs not on the whitelist.</div>
+                <ul class="unknown-session-list" id="unknown-ip-sessions-list">
+                    <li>IP: 192.168.2.150</li>
+                    <li>IP: 203.0.113.78</li>
+                </ul>
+            </div>
+
+            <div class="col">
+                <h3>VPN Client Version Details</h3>
+                <table class="details-table">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Version</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Endpoint-001</td>
+                            <td>1.2.3</td>
+                        </tr>
+                        <tr>
+                            <td>Laptop-567</td>
+                            <td>1.1.9</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <h3>VPN Client Version Compliance</h3>
+                <div id="version-compliance-summary">
+                    <span class="compliant">80% Compliant</span>, <span class="non-compliant">20% Non-Compliant</span>
+                </div>
+                <div class="metric-description">Compliance status of VPN client versions.</div>
+                <table class="details-table">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Version</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Client A</td>
+                            <td>1.2.3</td>
+                            <td class="compliant">Compliant</td>
+                        </tr>
+                        <tr>
+                            <td>Client B</td>
+                            <td>1.1.9</td>
+                            <td class="non-compliant">Non-Compliant</td>
+                        </tr>
+                        <tr>
+                            <td>Client C</td>
+                            <td>1.2.3</td>
+                            <td class="compliant">Compliant</td>
+                        </tr>
+                        <tr>
+                            <td>Client D</td>
+                            <td>1.1.5</td>
+                            <td class="non-compliant">Non-Compliant</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col col-2">
+                <h3>Active Remote Access Sessions</h3>
+                <table class="details-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>IP Address</th>
+                            <th>Location</th>
+                            <th>Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>User1</td>
+                            <td>192.168.1.100</td>
+                            <td>Singapore</td>
+                            <td>0:30:15</td>
+                        </tr>
+                        <tr>
+                            <td>User2</td>
+                            <td>203.0.113.45</td>
+                            <td>Unknown</td>
+                            <td>1:15:00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script src="scripts/header.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

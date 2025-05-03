@@ -7,18 +7,23 @@
     <title>Cybersecurity Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        html,
         body {
-            height: auto;
-            /* Allow height to adjust based on content */
-            margin: 0;
+            background-color: #1e1e1e;
+            color: #f8f9fa;
+        }
+
+        a {
+            color: #5bc0de;
+        }
+
+        a:hover {
+            color: #46b8da;
         }
 
         .full-height {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            /* Ensure it's at least the viewport height */
         }
 
         .row {
@@ -33,15 +38,81 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid #dee2e6;
-            background-color: #f8f9fa;
+            border: 1px solid #343a40;
+            background-color: #212529;
             min-height: 200px;
-            /* Example: Ensure each container has some minimum height */
         }
 
         footer {
             flex-shrink: 0;
-            /* Prevent the footer from shrinking */
+        }
+
+        /* Styles for the Supply Chain Risk News section (Dark Theme) */
+        .news-dashboard {
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .news-dashboard h2 {
+            color: #fff;
+        }
+
+        .news-item {
+            background-color: #2c2c2c;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            border-left: 5px solid #f0ad4e;
+            /* Dark theme highlight color */
+            margin-bottom: 15px;
+        }
+
+        .news-item h5 {
+            margin-top: 0;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .news-item p {
+            color: #ccc;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .news-item .source {
+            font-style: italic;
+            color: #999;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        .refresh-button {
+            padding: 10px 20px;
+            margin-bottom: 15px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .refresh-button:hover {
+            background-color: #4cae4c;
+        }
+
+        .loading-indicator {
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+            color: #777;
+        }
+
+        .error-message {
+            color: #d9534f;
+            text-align: center;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -50,19 +121,146 @@
     <header></header>
 
     <div class="container-fluid full-height">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-0">
-            <div class="col">Container 1</div>
-            <div class="col">Container 2</div>
-            <div class="col">Container 3</div>
-            <div class="col">Container 4</div>
-            <div class="col">Container 5</div>
-            <div class="col">Container 6</div>
+
+        <div class="news-dashboard mt-4">
+            <h2>Latest Supply Chain Risk News</h2>
+            <button class="refresh-button" onclick="fetchSupplyChainRiskNews()">Refresh News</button>
+            <div id="supplyChainNews">
+                <p class="loading-indicator">Fetching the latest news...</p>
+            </div>
         </div>
     </div>
     <div id="footer-placeholder"></div>
 
     <script src="scripts/header.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function displaySupplyChainRiskNews(newsArray) {
+            const newsContainer = document.getElementById('supplyChainNews');
+            newsContainer.innerHTML = ''; // Clear previous news
+
+            if (newsArray && newsArray.length > 0) {
+                newsArray.forEach(news => {
+                    const newsItem = document.createElement('div');
+                    newsItem.classList.add('news-item');
+                    newsItem.innerHTML = `
+                        <h5>${news.title}</h5>
+                        <p>${news.summary}</p>
+                        <p class="source">${news.source} - ${news.date}</p>
+                        ${news.link ? `<a href="${news.link}" target="_blank">Read More</a>` : ''}
+                    `;
+                    newsContainer.appendChild(newsItem);
+                });
+            } else {
+                newsContainer.innerHTML = '<p class="text-muted">No new supply chain risk information found at this time.</p>';
+            }
+        }
+
+        async function fetchSupplyChainRiskNews() {
+            document.getElementById('supplyChainNews').innerHTML = '<p class="loading-indicator">Fetching the latest news...</p>';
+            try {
+                const realNews = await getRealSupplyChainRiskNews();
+                function shuffleArray(array) {
+                    for (let i = array.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+                    }
+                    return array;
+                }
+
+                const randomizedNews = shuffleArray(realNews);
+                displaySupplyChainRiskNews(randomizedNews);
+            } catch (error) {
+                console.error('Error fetching supply chain risk news:', error);
+                document.getElementById('supplyChainNews').innerHTML = '<p class="error-message">Failed to load news. Please try again later.</p>';
+            }
+        }
+
+        async function getRealSupplyChainRiskNews() {
+            // This is a placeholder function. In a real application,
+            // you would implement logic here to fetch data from news APIs,
+            // RSS feeds, or scrape websites of reputable news sources
+            // related to supply chain risk.
+
+            return [
+                {
+                    title: "Rising Geopolitical Tensions Increase Supply Chain Risk in 2025",
+                    summary: "A new report highlights that increasing geopolitical tensions and protectionist trade policies are elevating the risk of supply chain failures for organizations globally.",
+                    source: "Insurance Business America",
+                    date: "May 02, 2025",
+                    link: "https://www.insurancebusinessmag.com/us/risk-management/news/rising-geopolitical-tensions-increase-supply-chain-risk-in-2025--report-528060.aspx"
+                },
+                {
+                    title: "Supply Chain Risk Grows Amid Ongoing Tariff Uncertainty",
+                    summary: "Dun & Bradstreet analysis indicates a drop in business optimism for supply chain continuity due to factors like freight costs, container shortages, and the added impact of new tariffs.",
+                    source: "Business Wire",
+                    date: "May 01, 2025",
+                    link: "https://www.businesswire.com/news/home/20250501703245/en/Supply-Chain-Risk-Grows-Amid-Ongoing-Tariff-Uncertainty"
+                },
+                {
+                    title: "The Biggest Global Supply Chain Risks of Q2 2025",
+                    summary: "A new analysis identifies the key global supply chain risks to watch in the second quarter of 2025, including climate-related disruptions and port congestion.",
+                    source: "Supply Chain Quarterly",
+                    date: "Apr 28, 2025",
+                    link: "https://www.supplychainquarterly.com/articles/3456-the-biggest-global-supply-chain-risks-of-q2-2025"
+                },
+                {
+                    title: "Marks & Spencer Hit by Ransomware Attack, Supply Chain Disrupted",
+                    summary: "A ransomware group named 'Scattered Spider' attacked M&S, disrupting supply chains and online services, causing shortages and a significant drop in market value.",
+                    source: "Financial Times",
+                    date: "May 02, 2025",
+                    link: "https://www.ft.com/content/5444d2e4-e258-45d2-8ca9-7927e502e3b9"
+                },
+                {
+                    title: "DragonForce Hacker Group Breaches Co-op Systems",
+                    summary: "Cybercriminals accessed the personal data of 20 million Co-op customers and employees, raising concerns over supply chain cybersecurity vulnerabilities.",
+                    source: "The Times UK",
+                    date: "May 01, 2025",
+                    link: "https://www.thetimes.co.uk/article/hackers-boast-they-took-co-op-customers-details-in-cyberattack-tmz82cqzm"
+                },
+                {
+                    title: "Magento Supply Chain Attack Hits Hundreds of Online Stores",
+                    summary: "A malicious payload hidden in Magento extensions for years was activated, compromising 500–1000 online stores including a multinational company.",
+                    source: "Bleeping Computer",
+                    date: "May 02, 2025",
+                    link: "https://www.bleepingcomputer.com/news/security/magento-supply-chain-attack-compromises-hundreds-of-e-stores/"
+                },
+                {
+                    title: "Ransomware Attacks on Food and Agriculture Double in 2025",
+                    summary: "Cyberattacks on food and agriculture sectors have increased dramatically, disrupting supply chains critical to national food security.",
+                    source: "The Record",
+                    date: "Apr 29, 2025",
+                    link: "https://therecord.media/ransomware-attacks-food-and-ag-double-2025"
+                },
+                {
+                    title: "Oracle Cloud Breach Exposes 6 Million Records, Affecting Over 140,000 Tenants",
+                    summary: "A threat actor exploited a vulnerability in Oracle Cloud's login endpoint, exfiltrating sensitive data including encrypted passwords and key files.",
+                    source: "CloudSEK",
+                    date: "Mar 21, 2025",
+                    link: "https://www.cloudsek.com/blog/the-biggest-supply-chain-hack-of-2025-6m-records-for-sale-exfiltrated-from-oracle-cloud-affecting-over-140k-tenants"
+                },
+                {
+                    title: "Supply Chain Cyber Attacks Surge Over 400%, Expected to Continue Rising",
+                    summary: "Between 2021 and 2023, supply chain attacks increased by 431%, with projections indicating continued growth through 2025.",
+                    source: "Insurance Business America",
+                    date: "Feb 19, 2025",
+                    link: "https://www.insurancebusinessmag.com/us/news/cyber/supply-chain-cyber-attacks-surge-over-400-expected-to-continue-rising--cowbell-report-525369.aspx"
+                },
+                {
+                    title: "Verizon's 2025 DBIR Report Finds Spike in Cyberattacks, Complexity in Threat Landscape",
+                    summary: "Third-party involvement in breaches has doubled to 30%, highlighting the risks associated with supply chain and partner ecosystems.",
+                    source: "Industrial Cyber",
+                    date: "Apr 25, 2025",
+                    link: "https://industrialcyber.co/reports/verizons-2025-dbir-report-finds-spike-in-cyberattacks-complexity-in-threat-landscape-amid-rising-supply-chain-threats/"
+                }
+            ];
+        }
+
+
+        // Initial load for supply chain risk news
+        fetchSupplyChainRiskNews();
+    </script>
 </body>
 
 </html>

@@ -253,12 +253,28 @@
             padding: 10px;
             border-radius: 8px;
         }
+
+        .dashboard-item-full {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            border: 1px solid #333;
+
+            /* Full-width in the grid */
+            grid-column: 1 / -1;
+        }
     </style>
 </head>
 
 <body>
     <header></header>
     <div class="dashboard-container">
+
+        <div class="dashboard-item-full">
+            <iframe src="relationship.html" width="100%" height="400px" frameborder="0" style="border: none;"></iframe>
+        </div>
+
         <div class="dashboard-item">
             <h5>Overall Risk Score</h5>
             <div class="kpi-large good">85</div>
@@ -321,48 +337,55 @@
         <div class="dashboard-item" style="padding: 15px; border-radius: 5px;">
             <h5 style="margin-bottom: 10px; text-align: center;">Top 5 Riskiest Suppliers</h5>
             <div class="bar-chart-container" style="display: flex; flex-direction: column; gap: 8px;">
+
                 <div class="bar-chart" style="background-color: #2c2c2c; border-radius: 5px; cursor: pointer;"
                     onclick="window.location.href = 'risk.html';">
                     <div class="bar"
                         style="width: 75%; background-color: #e40046; color: white; padding: 8px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
-                        <div class="bar-label" style="font-size: 0.95em;">Yong Brothers Trading</div>
+                        <div class="bar-label" style="font-size: 0.95em;">GE Aviation</div>
                         <div style="font-weight: bold; font-size: 0.95em;">75</div>
                     </div>
                 </div>
+
                 <div class="bar-chart" style="background-color: #2c2c2c; border-radius: 5px; cursor: pointer;"
                     onclick="window.location.href = 'risk.html';">
                     <div class="bar"
                         style="width: 68%; background-color: #f44336; color: white; padding: 8px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
-                        <div class="bar-label" style="font-size: 0.95em;">Han Seong Enterprises</div>
+                        <div class="bar-label" style="font-size: 0.95em;">Raytheon Technologies</div>
                         <div style="font-weight: bold; font-size: 0.95em;">68</div>
                     </div>
                 </div>
+
                 <div class="bar-chart" style="background-color: #2c2c2c; border-radius: 5px; cursor: pointer;"
                     onclick="window.location.href = 'risk.html';">
                     <div class="bar"
                         style="width: 55%; background-color: #ff9800; color: white; padding: 8px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
-                        <div class="bar-label" style="font-size: 0.95em;">Supplies by Shu Ying</div>
+                        <div class="bar-label" style="font-size: 0.95em;">Boeing</div>
                         <div style="font-weight: bold; font-size: 0.95em;">55</div>
                     </div>
                 </div>
+
                 <div class="bar-chart" style="background-color: #2c2c2c; border-radius: 5px; cursor: pointer;"
                     onclick="window.location.href = 'risk.html';">
                     <div class="bar"
                         style="width: 45%; background-color: #ffc107; color: white; padding: 8px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
-                        <div class="bar-label" style="font-size: 0.95em;">D'Imports</div>
+                        <div class="bar-label" style="font-size: 0.95em;">Honeywell Aerospace</div>
                         <div style="font-weight: bold; font-size: 0.95em;">45</div>
                     </div>
                 </div>
+
                 <div class="bar-chart" style="background-color: #2c2c2c; border-radius: 5px; cursor: pointer;"
                     onclick="window.location.href = 'risk.html';">
                     <div class="bar"
                         style="width: 30%; background-color: #fdd835; color: white; padding: 8px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
-                        <div class="bar-label" style="font-size: 0.95em;">Jons Jobs</div>
+                        <div class="bar-label" style="font-size: 0.95em;">Rolls-Royce</div>
                         <div style="font-weight: bold; font-size: 0.95em;">30</div>
                     </div>
                 </div>
+
             </div>
         </div>
+
 
         <div class="dashboard-item" style="background: linear-gradient(135deg, #232323, #1a1a1a);">
             <h5 class="text-light">Vulnerability & Patch Status</h5>
@@ -387,7 +410,7 @@
 
                 <div class="mb-2" onclick="window.location.href = 'risk.html';">
                     <div class="d-flex justify-content-between mb-1">
-                        <span class="text-light">Yong Brothers Trading</span>
+                        <span class="text-light">GE Aviation (Critical Engine Supplier)</span>
                         <span class="text-warning">6</span>
                     </div>
                     <div class="progress" style="height: 16px; background-color: #2c2c2c;">
@@ -397,7 +420,7 @@
 
                 <div>
                     <div class="d-flex justify-content-between mb-1" onclick="window.location.href = 'risk.html';">
-                        <span class="text-light">Han Seong Enterprises</span>
+                        <span class="text-light">Raytheon (Critical Avionics)</span>
                         <span class="text-warning">4</span>
                     </div>
                     <div class="progress" style="height: 16px; background-color: #2c2c2c;">
@@ -422,7 +445,6 @@
                 </li>
             </ul>
         </div>
-
     </div>
     <div id="footer-placeholder"></div>
     <script src="scripts/header.js"></script>
@@ -449,30 +471,6 @@
                 scales: {
                     x: { ticks: { color: '#bbb' }, grid: { color: '#333' } },
                     y: { ticks: { color: '#bbb' }, grid: { color: '#333' } }
-                }
-            }
-        });
-
-        const ctx = document.getElementById('securityTrendChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    data: [72, 74, 70, 76, 78, 80],
-                    borderColor: '#90caf9',
-                    backgroundColor: 'rgba(144,202,249,0.15)',
-                    tension: 0.4,
-                    fill: true,
-                    pointRadius: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { display: false },
-                    y: { display: false }
                 }
             }
         });

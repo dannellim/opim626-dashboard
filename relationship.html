@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>American Airlines Supply Chain Risk Map</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        .container {
+            padding: 0;
+            position: relative;
+        }
+
+        #network {
+            width: 100%;
+            height: 400px;
+        }
+
+        #graph-controls {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 5px;
+            background: rgba(18, 18, 18, 0.85);
+            border: 1px solid #444;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="network"></div>
+        <div id="graph-controls">
+            <button id="resetZoomBtn" class="btn btn-outline-light btn-sm mb-2">🔄 Reset</button>
+            <button id="fitToScreenBtn" class="btn btn-outline-light btn-sm">🧭 Fit</button>
+        </div>
+    </div>
+
+    <script>
+        const nodes = new vis.DataSet([
+            { id: 1, label: "⚠️ GE Aviation\n(Engine Supplier)", x: -800, y: -100, fixed: true, color: { background: "#2c2c2c", border: "#ff4d4d" } },
+            { id: 2, label: "⚠️ Raytheon\n(Avionics)", x: -800, y: 0, fixed: true, color: { background: "#2c2c2c", border: "#ff4d4d" } },
+            { id: 3, label: "Honeywell\n(Backup Systems)", x: -800, y: 100, fixed: true, color: { background: "#223", border: "#999" } },
+            { id: 7, label: "Boeing\n(Airframe Supplier)", x: -800, y: 200, fixed: true, color: { background: "#1c1c1c", border: "#ff9800" } },
+            { id: 8, label: "Rolls-Royce\n(Alt. Engine)", x: -800, y: 300, fixed: true, color: { background: "#1c1c1c", border: "#9c27b0" } },
+            { id: 11, label: "Caterpillar\n(Ground Equip)", x: -800, y: 400, fixed: true, color: { background: "#212121", border: "#ffc107" } },
+
+            { id: 4, label: "American Airlines\n(Main Carrier)", x: 0, y: 150, fixed: true, color: { background: "#003366", border: "#00bcd4" } },
+
+            { id: 5, label: "Sabre\n(GDS Partner)", x: 800, y: -100, fixed: true, color: { background: "#222", border: "#888" } },
+            { id: 6, label: "Expedia\n(Retail Channel)", x: 800, y: 0, fixed: true, color: { background: "#2a2a2a", border: "#888" } },
+            { id: 9, label: "Amadeus\n(IT/GDS)", x: 800, y: 100, fixed: true, color: { background: "#1e1e1e", border: "#4caf50" } },
+            { id: 10, label: "SITA\n(Airport Tech)", x: 800, y: 200, fixed: true, color: { background: "#1d1d1d", border: "#03a9f4" } },
+            // Tier 2 suppliers
+            { id: 12, label: "Arconic\n(Aluminum Components)", x: -1200, y: -200, fixed: true, color: { background: "#222", border: "#ff7043" } },
+            { id: 13, label: "Moog Inc.\n(Control Systems)", x: -1200, y: -100, fixed: true, color: { background: "#222", border: "#ff7043" } },
+
+            // Tier 3 suppliers
+            { id: 14, label: "Rio Tinto\n(Aluminum Source)", x: -1600, y: -200, fixed: true, color: { background: "#1e1e1e", border: "#ffc400" } },
+            { id: 15, label: "Analog Devices\n(Sensor Chips)", x: -1600, y: -100, fixed: true, color: { background: "#1e1e1e", border: "#ffc400" } },
+        ]);
+
+        const edges = new vis.DataSet([
+            { from: 1, to: 4, color: { color: "#ff4d4d" }, label: "Critical Supply" },
+            { from: 2, to: 4, color: { color: "#ff4d4d" }, label: "Critical Supply" },
+            { from: 3, to: 4, color: { color: "#9e9e9e" }, label: "Backup Systems" },
+            { from: 7, to: 4, color: { color: "#ffa726" }, label: "Airframes" },
+            { from: 8, to: 4, color: { color: "#ba68c8" }, label: "Engine Option" },
+            { from: 11, to: 4, color: { color: "#ffeb3b" }, label: "Ground Equipment" },
+            { from: 4, to: 5, color: { color: "#80cbc4" }, label: "Booking Tech" },
+            { from: 4, to: 6, color: { color: "#aed581" }, label: "Retail Travel" },
+            { from: 4, to: 9, color: { color: "#4caf50" }, label: "GDS Service" },
+            { from: 4, to: 10, color: { color: "#03a9f4" }, label: "Airport Tech" },
+            // Tier 3 to Tier 2
+            { from: 14, to: 12, color: { color: "#ffcc80" }, label: "Raw Material" },
+            { from: 15, to: 13, color: { color: "#ffcc80" }, label: "Core Electronics" },
+
+            // Tier 2 to Tier 1
+            { from: 12, to: 7, color: { color: "#ffab40" }, label: "Components" }, // to Boeing
+            { from: 13, to: 2, color: { color: "#ffab40" }, label: "Actuation Parts" } // to Raytheon
+
+        ]);
+
+        const container = document.getElementById("network");
+        const data = { nodes, edges };
+
+        const options = {
+            physics: false,
+            interaction: {
+                dragView: true,
+                zoomView: true,
+                dragNodes: false,
+                hover: true
+            },
+            nodes: {
+                shape: "box",
+                margin: 12,
+                font: {
+                    size: 14,
+                    color: "#f0f0f0",
+                    face: "Arial",
+                    multi: true
+                },
+                shadow: {
+                    enabled: true,
+                    color: 'rgba(0,0,0,0.3)',
+                    size: 10,
+                    x: 2,
+                    y: 2
+                },
+                color: {
+                    highlight: { background: "#1e1e1e", border: "#28a745" },
+                    hover: { background: "#1e1e1e", border: "#28a745" }
+                }
+            },
+            edges: {
+                arrows: {
+                    to: { enabled: true, scaleFactor: 0.7 }
+                },
+                smooth: {
+                    type: "curvedCCW",
+                    roundness: 0.25
+                },
+                font: {
+                    color: "#ffffff",
+                    size: 14,
+                    align: "top",
+                    strokeWidth: 0
+                }
+            }
+        };
+
+        const network = new vis.Network(container, data, options);
+
+        document.getElementById("resetZoomBtn").addEventListener("click", () => {
+            network.moveTo({
+                position: { x: 0, y: 0 },
+                scale: 1.0,
+                animation: { duration: 500, easingFunction: "easeInOutQuad" }
+            });
+        });
+
+        document.getElementById("fitToScreenBtn").addEventListener("click", () => {
+            network.fit({
+                animation: { duration: 500, easingFunction: "easeInOutQuad" }
+            });
+        });
+
+        network.on("click", function (params) {
+            if (params.nodes.length > 0) {
+                const nodeId = params.nodes[0];
+                if (nodeId) window.open("risk.html", "_blank");
+            }
+        });
+    </script>
+</body>
+
+</html>
